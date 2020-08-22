@@ -1,5 +1,6 @@
 const http = require('http');
 const fs = require('fs');
+const { writeHeapSnapshot } = require('v8');
 
 var server = http.createServer(getFromClient);
 
@@ -10,11 +11,11 @@ console.log('Server start!');
 function getFromClient(req,res){
     request = req;
     response = res;
-    fs.readFile('./note.html', 'UTF-8',
-        (error, data) => {
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            response.write(data);
-            response.end();
-        }
-    );
+    fs.readFile('./note.html', 'UTF-8', writeToResponse);
+}
+
+function writeToResponse(error,data){
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.write(data);
+    response.end();
 }
