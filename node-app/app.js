@@ -1,6 +1,5 @@
 const http = require('http');
 const fs = require('fs');
-const { writeHeapSnapshot } = require('v8');
 
 var server = http.createServer(getFromClient);
 
