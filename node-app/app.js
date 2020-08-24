@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const url = require('url');
 
 const index_page = fs.readFileSync('./index.ejs', 'utf-8');
+const other_page = fs.readFileSync('./other.ejs', 'utf-8');
 const style_css = fs.readFileSync('./style.css', 'utf-8');
 
 var server = http.createServer(getFromClient);
@@ -24,6 +25,16 @@ function getFromClient(request,response){
             response.end();
             break;
         
+        case '/other.css':
+            var content = ejs.render(other_page, {
+                title:"Other",
+                contentu:"this is a newly prepared page.",
+            });
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.write(other_page);
+            response.end();
+            break;
+
         case '/style.css':
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(style_css);
