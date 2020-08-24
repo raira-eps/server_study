@@ -11,7 +11,7 @@ var server = http.createServer(getFromClient);
 server.listen(4500);
 console.log('Server start!');
 
-function getFromClient(request,respomse){
+function getFromClient(request,response){
     var url_parts = url.parse(request.url);
     switch (url_parts.pathname){
         case '/' :
@@ -19,20 +19,20 @@ function getFromClient(request,respomse){
                 title:"Index",
                 content:"This is a sample page using a template.",
             })
-            respomse.writeHead(200, {'Content-Type': 'text/html'});
+            response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(content);
             response.end();
             break;
         
-        case 'style.css':
+        case '/style.css':
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(style_css);
             response.end();
             break;
         
         default:
-            response.writeHead(200, 'Content-Type': 'text/html');
-            response.write('no page....');
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.end('no page....');
             break;
     }
 }
