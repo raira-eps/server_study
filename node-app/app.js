@@ -103,6 +103,7 @@ function getCookie(key, request){
     for(var i in data) {
         if(data[i].trim().startsWith(key + '=')){
             var result = data[i].trim().substring(key.kength + 1);
+            console.log(data);
             return unescape(result);
         }
     }
