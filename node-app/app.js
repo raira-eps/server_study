@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const ejs = require('ejs');
 const url = require('url');
+const qs = require('querystring');
 
 const index_page = fs.readFileSync('./index.ejs', 'utf-8');
 const other_page = fs.readFileSync('./other.ejs', 'utf-8');
@@ -16,30 +17,11 @@ function getFromClient(request,response){
     var url_parts = url.parse(request.url, true);
     switch (url_parts.pathname){
         case '/' :
-            var content = "this is index page."
-            var query = url_parts.query;
-            if (query.msg != undefined){
-                var query_obj = 
-                content += 'you send ' + query.msg +' ';
-            }
-            var content = ejs.render(index_page, {
-                title:"Index",
-                content:content,
-              //content:"This is a sample page using a template.",
-            })
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            response.write(content);
-            response.end();
+            resopnse_index(request, response);
             break;
         
-        case '/other.css':
-            var content = ejs.render(other_page, {
-                title:"Other",
-                contentu:"this is a newly prepared page.",
-            });
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            response.write(other_page);
-            response.end();
+        case '/other':
+            response_other(request, response);
             break;
 
         case '/style.css':
@@ -55,18 +37,53 @@ function getFromClient(request,response){
     }
 }
 
-//function getFromClient(request, response){
-//    var content = ejs.render(index_page);
-//   response.writeHead(200, {'Content-Type': 'text/html'});
-//    response.write(content);
-//    response.end();
-//}
+//Index access process
+function resopnse_index(request, response){
+    var msg = "this is index page."
+    var content = ejs.render(index_page, {
+        title: "Index",
+        content: msg,
+    });
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.write(content);
+    response.end();
+}
 
-//function getFromClient(req,res){
-//    request = req;
-//    response = res;
-//    fs.readFile('./note.html', 'UTF-8', writeToResponse);
-//}
+//other access process
+function response_other(request, response){
+    var msg = "this is other page."
+    if (request.method == 'POST'){
+        var body = '';
+
+        //event processing for data reception
+        request.on('data', (data) => {
+            body +=data;
+        });
+        //event processing for the end of data reception
+        request.on('end', ()=> {
+            var post_data = qs.parse(body);
+            msg += 'you wrote '+ post_data.msg +'';
+            var content = ejs.render(other_page, {
+                title: "Other",
+                content:msg,
+            });
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.write(content);
+            response.end();
+        });
+    //Processing at GET access
+    }else{
+        var msg = 'There are no pages.'
+        var content = ejs.render(other_page, {
+            title:"Other",
+            content:msg,
+        });
+        response.writeHead(200, {'Content-Type': "text/html"});
+        response.write(content);
+        response.end();
+    }
+
+}
 
 function writeToResponse(error,data){
     response.writeHead(200, {'Content-Type': 'text/html'});

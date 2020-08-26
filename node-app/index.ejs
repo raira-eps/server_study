@@ -11,7 +11,13 @@
     </head>
     <div role="main">
       <p><%=content %></p>
-      <p><a href="/other">Go to Other page... &gt;&gt;</a></p> 
+      <form method="post" action="/other">
+        <p>
+          <input type="text" name="msg">
+          <input type="submit" value="Click">
+        </p>
+      </form>
+      <!--<p><a href="/other">Go to Other page... &gt;&gt;</a></p> -->
     </div>
   </body>
 </html>
