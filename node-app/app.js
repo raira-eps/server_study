@@ -22,6 +22,10 @@ var data2 = {
     'hiro': ['hiro@onion', '4444', 'ua'],
 };
 
+var data_msg = {
+    msg:'no message...'
+};
+
 var server = http.createServer(getFromClient);
 
 server.listen(4500);
@@ -54,16 +58,55 @@ function getFromClient(request,response){
 
 //Index access process
 function resopnse_index(request, response){
-    var msg = "this is index page."
+   if (request.method == 'POST'){
+       var body = '';
+       request.on('data', (data) =>{
+        body += data;
+       })
+       request.on('end', () =>{
+           data = qs.parse(body);
+           //Saving cookies
+            setCookie('msg', data.msg, response);
+           write_index(request, response);
+       });
+   } else {
+       write_index(request, response);
+   }
+}
+
+function write_index(request, response){
+    var msg = "Show Message"
+    var cookie_data = getCookie('msg', request);
     var content = ejs.render(index_page, {
         title: "Index",
         content: msg,
         data:data,
-        filename:'data_item'
+        cookie_data:cookie_data,
+      //filename:'data_item'
     });
     response.writeHead(200, {'Content-Type': 'text/html'});
     response.write(content);
     response.end();
+}
+
+//Set the value of the cookie
+function setCookie(key, value, response){
+    var cookie = escape(value);
+    response.setHeader('Set-Cookie', [key + '=' + cookie]);
+}
+
+//Get the value of the cookie
+function getCookie(key, request){
+    var cookie_data = request.headers.cookie != undefined ? 
+        request.headers.cookie :'';
+    var data  = cookie_data.split(';');
+    for(var i in data) {
+        if(data[i].trim().startsWith(key + '=')){
+            var result = data[i].trim().substring(key.kength + 1);
+            return unescape(result);
+        }
+    }
+    return '';
 }
 
 //other access process
