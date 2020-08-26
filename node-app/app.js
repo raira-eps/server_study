@@ -11,7 +11,15 @@ const style_css = fs.readFileSync('./style.css', 'utf-8');
 var data = {
     'Taro' : '11111',
     'Hanko' : '22222',
-    'Sachiko' : '333333'
+    'Sachiko' : '333333',
+    'Hiro' : '444444'
+};
+
+var data2 = {
+    'taro': ['taro@yahoo', '1111', 'tokyo'],
+    'hanako': ['hanako@google', '2222', 'tokyo'],
+    'sachiko': ['sachiko@yahoo', '3333', 'usa'],
+    'hiro': ['hiro@onion', '4444', 'ua'],
 };
 
 var server = http.createServer(getFromClient);
@@ -51,6 +59,7 @@ function resopnse_index(request, response){
         title: "Index",
         content: msg,
         data:data,
+        filename:'data_item'
     });
     response.writeHead(200, {'Content-Type': 'text/html'});
     response.write(content);
@@ -74,6 +83,8 @@ function response_other(request, response){
             var content = ejs.render(other_page, {
                 title: "Other",
                 content:msg,
+                data:data2,
+                filename:'data_item'
             });
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(content);

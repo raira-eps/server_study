@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta http-equiv="content-type" content="text/html" charset="utf-8">
@@ -11,9 +10,16 @@
       <h1><%=title %></h1>
     </head>
     <div role="main">
+      <p>
+        <table>
+          <% for(var key in data) { %>
+            <%- include('data_item', {key:key, val:data[key]}) %>
+          <% } %>
+        </table>
+      </p>
         <p><%=content %></p>
         <p><a href="/">Go to index page... &gt;&gt;</a></p>
     </div>
   </body>
-  
+
 </html>
