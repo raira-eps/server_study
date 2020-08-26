@@ -8,6 +8,12 @@ const index_page = fs.readFileSync('./index.ejs', 'utf-8');
 const other_page = fs.readFileSync('./other.ejs', 'utf-8');
 const style_css = fs.readFileSync('./style.css', 'utf-8');
 
+var data = {
+    'Taro' : '11111',
+    'Hanko' : '22222',
+    'Sachiko' : '333333'
+};
+
 var server = http.createServer(getFromClient);
 
 server.listen(4500);
@@ -37,12 +43,14 @@ function getFromClient(request,response){
     }
 }
 
+
 //Index access process
 function resopnse_index(request, response){
     var msg = "this is index page."
     var content = ejs.render(index_page, {
         title: "Index",
         content: msg,
+        data:data,
     });
     response.writeHead(200, {'Content-Type': 'text/html'});
     response.write(content);
