@@ -13,12 +13,19 @@ server.listen(4500);
 console.log('Server start!');
 
 function getFromClient(request,response){
-    var url_parts = url.parse(request.url);
+    var url_parts = url.parse(request.url, true);
     switch (url_parts.pathname){
         case '/' :
+            var content = "this is index page."
+            var query = url_parts.query;
+            if (query.msg != undefined){
+                var query_obj = 
+                content += 'you send ' + query.msg +' ';
+            }
             var content = ejs.render(index_page, {
                 title:"Index",
-                content:"This is a sample page using a template.",
+                content:content,
+              //content:"This is a sample page using a template.",
             })
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(content);
