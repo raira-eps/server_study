@@ -6,7 +6,7 @@ const url = require('url');
 const qs = require('querystring');
 
 const index_page = fs.readFileSync('./index.ejs', 'utf-8');
-const login_page = fs.readFileSync('./login/ejs', 'utf-8');
+const login_page = fs.readFileSync('./login.ejs', 'utf-8');
 const style_css = fs.readFileSync('./style.css', 'utf-8');
 
 const max_num = 10; //最大保管数
@@ -33,7 +33,7 @@ function getFromClient(request, response){
 
         case '/style.css' :
         response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write(content);
+        response.write(style_css);
         response.end();
 
         default:
@@ -58,11 +58,15 @@ function response_index(request, response){
         var body = '';
 
         //データ受信のイベント処理
+        request.on('data', function(data){
+            body +=data;
+        });
+        //データ受信終了のイベント処理
         request.on('end', function(){
-            data = qa.parse(body);
+            data = qs.parse(body);
             addToData(data.id, data.msg, filename, request);
             write_index(request, response);
-        })
+        });
     } else {
         write_index(request, response);
     }
@@ -83,7 +87,7 @@ function write_index(request, response){
 }
 
 //テキストファイルをロード
-function readFromFile(request, response){
+function readFromFile(fname){
     fs.readFile(fname, 'utf8', (err,data) => {
         message_data = data.split('\n');
     })
