@@ -58,6 +58,55 @@ function response_index(request, response){
         var body = '';
 
         //データ受信のイベント処理
-
+        request.on('end', function(){
+            data = qa.parse(body);
+            addToData(data.id, data.msg, filename, request);
+            write_index(request, response);
+        })
+    } else {
+        write_index(request, response);
     }
+}
+
+//Indexのページ作成
+function write_index(request, response){
+    var msg = "※何かメッセージを書いて下さい";
+    var content = ejs.render(index_page, {
+        title:'Index',
+        content:'msg',
+        data:message_data,
+        filename:'data_item',
+    });
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.write(content);
+    response.end();
+}
+
+//テキストファイルをロード
+function readFromFile(request, response){
+    fs.readFile(fname, 'utf8', (err,data) => {
+        message_data = data.split('\n');
+    })
+}
+
+//データ更新
+function addToData(id, msg, fname, request){
+    var obj = {'id': id, 'msg': msg};
+    var obj_str = JSON.stringify(obj);
+    console.log('add data: ' + obj_str);
+    message_data.unshift(obj_str);
+    if (message_data.length > max_num){
+        message_data.pop();
+    }
+    saveToFile(fname);
+}
+
+//データ保存
+function saveToFile(fname){
+    var data_str = message_data.join('\n');
+    fs.writeFile(fname, data_str, (err) => {
+        if (err) {
+            throw err;
+        }
+    });
 }
