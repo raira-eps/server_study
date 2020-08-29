@@ -2,17 +2,23 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', (req, res, next) => {
+    var msg = "※何か書いて送信してください";
+    if (req.session.message != undefined){
+        msg = "Last message: " + req.session.message;
+    }
     var data = {
-        title: 'Hello',
-        content: "※何か書いてください"
+        title: "hello",
+        content: msg,
     };
     res.render('hello', data);
 });
+
 router.post('/post', (req, res, next) => {
     var msg = req.body['message'];
+    req.session.message = msg;
     var data = {
         title:"Hello",
-        content:"あなたは、「" + msg +"」と送信しました",
+        content:"Last message: " + req.session.message,
     };
     res.render('hello', data);
 })
