@@ -2,23 +2,41 @@ var express = require('express');
 var ejs = require('ejs');
 
 var app = express();
-
 app.engine('ejs', ejs.renderFile);
-
 app.use(express.static('public'));
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+
+var data = {
+    'taro':'taro@dotcom',
+    'sati':'sati@google',
+    'kiyo':'tomato@yahoo',
+    'imiwa':'karann@ejs',
+};
 
 //top page
 app.get("/", (req, res) => {
-    var msg = "Top page";
-    var url = "/other?name=taro&pass=yamada";
+    var msg = "this is Index page<br>"
+                + "※メッセージを書いて送信してください";
     //index.ejsをレンダリングする
     res.render('index.ejs', {
         title:'Index',
         content: msg,
-        link:{href:url, text:'※別のページに移動'},
+        data:data,
     });
 });
 
+//POST送信の処理
+app.post('/', (req, res) => {
+    var msg = "This is posted page<br>"
+            + "あなたは<b>" + req.body.message + "</b>と書いて送りました";
+    res.render('index.ejs',{
+        title:'Posted page',
+        content:msg,
+        data:data,
+    });
+});
 //other page
 app.get("/other", (req, res) => {
     var name = req.query.name;
