@@ -33,10 +33,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 //session
 app.use(session(session_opt));
 
+app.use('/ajax', ajax);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/hello', hello);
-app.use('/ajax', ajax);
 
 
 // catch 404 and forward to error handler
