@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
             parseString(body.trim(), (err, result) => {
                 var data = {
                     title: 'google',
-                    content: result.rss.channel[0].item
+                    content: result.rss.channel[0].item,
                 }
                 res.render('google', data);
             });
