@@ -7,7 +7,7 @@ var session = require('express-session'); //session
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var google = require('routes/google');
+var google = require('./routes/google');
 var hello = require('./routes/hello');
 var ajax = require('./routes/ajax');
 

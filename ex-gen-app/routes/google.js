@@ -20,9 +20,11 @@ router.get('/', (req, res, next) => {
                 var data = {
                     title: 'google',
                     content: result.rss.channel[0].item
-                };
+                }
                 res.render('google', data);
             });
         });
     });
 });
+
+module.exports = router;
