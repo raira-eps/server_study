@@ -25,7 +25,7 @@ router.get('/', (req, res, next) => {
             var data = {title:'mysql', 
                         content:results,
                        };
-            res.render('hello', data);
+            res.render('hello/index', data);
         }
     });
     //接続を解除
