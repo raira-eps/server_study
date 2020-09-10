@@ -57,8 +57,10 @@ router.post('/add', (req, res, next) => {
     connection.connect();
     //データを取り出す
     connection.query('insert into mydata set ?', data, function(error, results, fields){
-        res.render('/hello');
+        res.redirect('/hello');
     });
+    //接続を解除
+    connection.end();
 });
 
 //router.post('/post', (req, res, next) => {
