@@ -100,7 +100,7 @@ router.get('/edit', (req, res, next) => {
     //データベースに接続
     connection.connect();
     //データを取り出す
-    connection.query('SELECT * from mydata where id=?', id, function(error, result, fields){
+    connection.query('SELECT * from mydata where id=?', id, function(error, results, fields){
         //データベースアクセス完了時の処理
         if ( error == null) {
             var data = {
@@ -108,7 +108,7 @@ router.get('/edit', (req, res, next) => {
                 content: 'id = ' + id + ' のレコード',
                 mydata: results[0],
             }
-            res.render('hello.edit', data);
+            res.render('hello/edit', data);
         }
     });
 
@@ -130,8 +130,8 @@ router.post('/edit', (req, res, next) => {
     connection.connect();
     //データを取り出す
     connection.query('update mydata set ? where id = ?', 
-                    [data, id], function(error, result, fields) {
-                        res.redirect('hello');
+                    [data, id], function(error, results, fields) {
+                        res.redirect('/hello');
                     });
     
     //接続を解除
