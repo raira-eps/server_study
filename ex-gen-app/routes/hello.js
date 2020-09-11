@@ -90,6 +90,54 @@ router.get('/show', (req, res, next) => {
     connection.end();
 });
 
+//------------------------------------------------------------------------------//
+
+router.get('/edit', (req, res, next) => {
+    var id = req.query.id;
+
+    //データベースの設定情報  
+    var connection = mysql.createConnection(mysql_setting);
+    //データベースに接続
+    connection.connect();
+    //データを取り出す
+    connection.query('SELECT * from mydata where id=?', id, function(error, result, fields){
+        //データベースアクセス完了時の処理
+        if ( error == null) {
+            var data = {
+                title: 'hello/edit',
+                content: 'id = ' + id + ' のレコード',
+                mydata: results[0],
+            }
+            res.render('hello.edit', data);
+        }
+    });
+
+    //接続を解除
+    connection.end();
+});
+
+//編集フォーム送信の処理
+router.post('/edit', (req, res, next) => {
+    var id = req.body.id;
+    var nm = req.body.name;
+    var ml = req.body.mail;
+    var ag = req.body.age;
+    var data = {'name':nm, 'mail':ml, 'age':ag};
+
+    //データベースの設定情報
+    var connection = mysql.createConnection(mysql_setting);
+    //データベースに接続
+    connection.connect();
+    //データを取り出す
+    connection.query('update mydata set ? where id = ?', 
+                    [data, id], function(error, result, fields) {
+                        res.redirect('hello');
+                    });
+    
+    //接続を解除
+    connection.end();
+});
+
 //router.post('/post', (req, res, next) => {
 // var msg = req.body['message'];
 //   req.session.message = msg;
