@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var { check , validationResult} = require('express-validator');
 
 var mysql_setting = {
     host    :'127.0.0.1',
@@ -8,6 +9,7 @@ var mysql_setting = {
     password:'root',
     database:'my_nodeapp_db'
 }
+
 
 router.get('/', (req, res, next) => {
     //コネクションの用意
@@ -39,28 +41,51 @@ router.get('/', (req, res, next) => {
 router.get('/add', (req, res, next) => {
     var data = {
         title:'Hello/add',
-        content:'新しいレコードを追加'
+        content:'新しいレコードを追加',
+        form: {name:'', mail:'', age:0}
     }
     res.render('hello/add', data);
 });
 
 //新規作成フォーム送信の処理
 router.post('/add', (req, res, next) => {
-    var nm = req.body.name;
-    var ml = req.body.mail;
-    var ag = req.body.age;
-    var data = {'name': nm, 'mail': ml, 'age': ag,};
+    check('name', 'Be sure to fill out the NAME').not().notEmpty();
+    check('mail', 'Be sure to fill out the MAIL').isEmail();
+    check('age', 'Be sure to fill out the AGE').isInt();
 
-    //データベースの設定情報
-    var connection = mysql.createConnection(mysql_setting);
-    //データベースに接続
-    connection.connect();
-    //データを取り出す
-    connection.query('insert into mydata set ?', data, function(error, results, fields){
-        res.redirect('/hello');
-    });
-    //接続を解除
-    connection.end();
+    validationResult(req).then((resutl) => {
+        if (!result.isEmpty()){
+            var re = '<ul class="error">';
+            var result_arr = result_array();
+            for (var n in result_arr ) {
+                re += '<li>' + result_arr[n].msg + '</li>'
+            }
+            re += '</ul>';
+            var data = {
+                taitle: 'hello/add',
+                content: re,
+                form: req.body,
+            }
+            res.render('hello/add', data);
+
+        } else {
+            var nm = req.body.name;
+        var ml = req.body.mail;
+        var ag = req.body.age;
+        var data = {'name': nm, 'mail': ml, 'age': ag,};
+    
+        //データベースの設定情報
+        var connection = mysql.createConnection(mysql_setting);
+        //データベースに接続
+        connection.connect();
+        //データを取り出す
+        connection.query('insert into mydata set ?', data, function(error, results, fields){
+            res.redirect('/hello');
+        });
+        //接続を解除
+        connection.end();
+        }
+    })
 });
 
 //------------------------------------------------------------------------------//
